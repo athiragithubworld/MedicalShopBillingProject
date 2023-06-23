@@ -4,7 +4,6 @@ const CartContext = React.createContext({
   medProductList: [],
   totalPrice: 0,
   addProduct: (product) => {},
-  removeProduct: (product) => {},
 });
 
 export default CartContext;
