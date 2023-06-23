@@ -45,13 +45,11 @@ const CartProvider = (props) => {
         setMedium(product.quantityMedium);
         setSmall(product.quantitySmall);
         setcartID(product._id);
-      } else if (product.id !== item.id) {
-        console.log("get post id");
       }
     });
 
     if (hasProduct) {
-      console.log("???", Number(cartId));
+      console.log("CartId???", Number(cartId));
       axios
         .put(
           `https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/cartProducts/${cartId}`,
