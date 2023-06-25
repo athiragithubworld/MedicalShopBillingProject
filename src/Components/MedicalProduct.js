@@ -4,8 +4,10 @@ import CartContext from "../store/CartContext";
 
 const MedicalProduct = (props) => {
   const cartcntx = useContext(CartContext);
+  // console.log("get the meditem", cartcntx.productList);
 
   const [productList, setProductList] = useState([]);
+
   const name = useRef("");
   const description = useRef("");
   const price = useRef("");
@@ -14,18 +16,19 @@ const MedicalProduct = (props) => {
   const small = useRef("");
 
   useEffect(() => {
-    axios
-      .get(
-        "https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/addedProducts"
-      )
-      .then((response) => {
-        // console.log("1x1", response.data);
-        setProductList(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    setProductList(cartcntx.productList);
+    // axios
+    //   .get(
+    //     "https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/addedProducts"
+    //   )
+    //   .then((response) => {
+    //     // console.log("1x1", response.data);
+    //     setProductList(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  }, [cartcntx.productList]);
 
   const addProductsHandler = (event) => {
     event.preventDefault();
@@ -37,26 +40,30 @@ const MedicalProduct = (props) => {
     const enteredMediumQt = medium.current.value;
     const enteredSmallQt = small.current.value;
 
-    // save to crudcrud server
-    axios
-      .post(
-        "https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/addedProducts",
-        {
-          id: Math.random().toString(),
-          name: enteredName,
-          description: enteredDescription,
-          price: enteredPrice,
-          largeQt: enteredLargeQt,
-          mediumQt: enteredMediumQt,
-          smallQt: enteredSmallQt,
-        }
-      )
-      .then((response) => {
-        // console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const medproducts = {
+      id: Math.random().toString(),
+      name: enteredName,
+      description: enteredDescription,
+      price: enteredPrice,
+      largeQt: enteredLargeQt,
+      mediumQt: enteredMediumQt,
+      smallQt: enteredSmallQt,
+    };
+
+    cartcntx.addMedProducts(medproducts);
+
+    // // save to crudcrud server
+    // axios
+    //   .post(
+    //     "https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/addedProducts",
+
+    //   )
+    //   .then((response) => {
+    //     // console.log(response);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
 
     // clear the data
     name.current.value = "";
@@ -82,46 +89,6 @@ const MedicalProduct = (props) => {
   //           quantityLarge: 1,
   //           quantityMedium: 0,
   //           quantitySmall: 0,
-  //         });
-  //       }
-  //     }
-  //   });
-  // };
-
-  // const mediumQuantityHandler = (item) => {
-  //   let squantity = Number(item.mediumQt) - 1;
-
-  //   productList.map((product) => {
-  //     if (product.id === item.id) {
-  //       const quantity = { ...product, mediumQt: squantity };
-
-  //       if (squantity >= 0) {
-  //         const updateList = productList.filter((pdt) => pdt.id !== item.id);
-  //         setProductList([...updateList, quantity]);
-  //         cartcntx.addProduct({
-  //           ...item,
-  //           quantityLarge: 0,
-  //           quantityMedium: 1,
-  //           quantitySmall: 0,
-  //         });
-  //       }
-  //     }
-  //   });
-  // };
-
-  // const smallQuantityHandler = (item) => {
-  //   let squantity = Number(item.smallQt) - 1;
-  //   productList.map((product) => {
-  //     if (product.id === item.id) {
-  //       const quantity = { ...product, smallQt: squantity };
-  //       if (squantity >= 0) {
-  //         const updateList = productList.filter((pdt) => pdt.id !== item.id);
-  //         setProductList([...updateList, quantity]);
-  //         cartcntx.addProduct({
-  //           ...item,
-  //           quantityLarge: 0,
-  //           quantityMedium: 0,
-  //           quantitySmall: 1,
   //         });
   //       }
   //     }
@@ -186,20 +153,8 @@ const MedicalProduct = (props) => {
       const { _id, ...rest } = quantity;
       axios
         .put(
-          `https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/addedProducts/${item._id}`,
+          `https://crudcrud.com/api/4b4df87aa6d144d59f7044ee864004f7/addedProducts/${item._id}`,
           rest
-
-          // { "Content-Type": "application/json" }
-          //  {
-          //    _id: item._id,
-          //    id: item.id,
-          //    name: item.name,
-          //    description: item.description,
-          //    price: item.price,
-          //    largeQt: enteredLargeQt,
-          //    mediumQt: enteredMediumQt,
-          //    smallQt: enteredSmallQt,
-          //  }
         )
         .then((response) => {
           // console.log(response);
