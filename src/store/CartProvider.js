@@ -134,13 +134,16 @@ const CartProvider = (props) => {
         )
         .then((response) => {
           console.log("get post data", response.data);
+          setMedProductLists((prevPdt) => {
+            return [...prevPdt, response.data];
+          });
         })
         .catch((error) => {
           console.log(error);
         });
-      setMedProductLists((prevPdt) => {
-        return [...prevPdt, item];
-      });
+      // setMedProductLists((prevPdt) => {
+      //   return [...prevPdt, item];
+      // });
     }
   };
 
