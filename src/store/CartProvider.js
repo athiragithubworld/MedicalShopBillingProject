@@ -10,10 +10,52 @@ const CartProvider = (props) => {
 
   const [medProductLists, setMedProductLists] = useState([]);
 
+  const [productLists, setProductList] = useState([]);
+
+  // ---------------get items from addproductbutton------------------------------//
+
+  let medProductObj = {};
   useEffect(() => {
     axios
       .get(
-        `https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/cartProducts`
+        "https://crudcrud.com/api/4b4df87aa6d144d59f7044ee864004f7/addedProducts"
+      )
+      .then((response) => {
+        // console.log("1x1", response.data);
+
+        medProductObj = response.data;
+        setProductList(medProductObj);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //  add items to addedproducts
+  const addMedProductHandler = (meditem) => {
+    // save to crudcrud server
+    axios
+      .post(
+        "https://crudcrud.com/api/4b4df87aa6d144d59f7044ee864004f7/addedProducts",
+        meditem
+      )
+      .then((response) => {
+        console.log(response);
+        medProductObj = response.data;
+        setProductList([...productLists, response.data]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // setProductList(medProductObj);
+  };
+
+  // get items from carts
+  useEffect(() => {
+    axios
+      .get(
+        `https://crudcrud.com/api/4b4df87aa6d144d59f7044ee864004f7/cartProducts`
       )
       .then((response) => {
         console.log("get the data", response.data);
@@ -25,7 +67,9 @@ const CartProvider = (props) => {
       });
   }, []);
 
+  // add items to cart
   const addProductHandler = (item) => {
+    console.log("item", item);
     let cartpdt = [...medProductLists];
 
     let hasProduct = false;
@@ -49,18 +93,20 @@ const CartProvider = (props) => {
     });
 
     if (hasProduct) {
-      console.log("CartId???", Number(cartId));
+      const largevalue = large.toString();
+      const mediumvalue = medium.toString();
+      const smallvalue = small.toString();
       axios
         .put(
-          `https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/cartProducts/${cartId}`,
+          `https://crudcrud.com/api/4b4df87aa6d144d59f7044ee864004f7/cartProducts/${item._id}`,
           {
             id: item.id,
             medBillName: item.name,
             medBillDescription: item.description,
             medBillPrice: item.price,
-            quantityLarge: large,
-            quantityMedium: medium,
-            quantitySmall: small,
+            quantityLarge: largevalue,
+            quantityMedium: mediumvalue,
+            quantitySmall: smallvalue,
           }
         )
         .then((response) => {
@@ -70,11 +116,11 @@ const CartProvider = (props) => {
           console.log(err);
         });
 
-      setMedProductLists(cartpdt);
+      // setMedProductLists(cartpdt);
     } else {
       axios
         .post(
-          `https://crudcrud.com/api/b46e7c3d82164bcbb90a07bc1e94ab51/cartProducts`,
+          `https://crudcrud.com/api/4b4df87aa6d144d59f7044ee864004f7/cartProducts`,
           {
             // medProductid: item._id,
             id: item.id,
@@ -105,6 +151,8 @@ const CartProvider = (props) => {
     quantityLarge: 0,
     quantityMedium: 0,
     quantitySmall: 0,
+    productList: productLists,
+    addMedProducts: addMedProductHandler,
   };
 
   return (
